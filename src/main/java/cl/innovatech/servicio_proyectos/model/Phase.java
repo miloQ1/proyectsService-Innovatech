@@ -1,0 +1,64 @@
+package cl.innovatech.servicio_proyectos.model;
+
+import cl.innovatech.servicio_proyectos.model.enums.PhaseStatus;
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "phases")
+public class Phase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "phase_id")
+    private Long phaseId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @Column(nullable = false, length = 150)
+    private String name;
+
+    @Column(name = "sequence_order", nullable = false)
+    private Integer sequenceOrder;
+
+    @Column(name = "planned_start")
+    private LocalDate plannedStart;
+
+    @Column(name = "planned_end")
+    private LocalDate plannedEnd;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PhaseStatus status;
+
+    @OneToMany(mappedBy = "phase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
+
+    public Long getPhaseId() { return phaseId; }
+    public void setPhaseId(Long phaseId) { this.phaseId = phaseId; }
+
+    public Project getProject() { return project; }
+    public void setProject(Project project) { this.project = project; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public Integer getSequenceOrder() { return sequenceOrder; }
+    public void setSequenceOrder(Integer sequenceOrder) { this.sequenceOrder = sequenceOrder; }
+
+    public LocalDate getPlannedStart() { return plannedStart; }
+    public void setPlannedStart(LocalDate plannedStart) { this.plannedStart = plannedStart; }
+
+    public LocalDate getPlannedEnd() { return plannedEnd; }
+    public void setPlannedEnd(LocalDate plannedEnd) { this.plannedEnd = plannedEnd; }
+
+    public PhaseStatus getStatus() { return status; }
+    public void setStatus(PhaseStatus status) { this.status = status; }
+
+    public List<Task> getTasks() { return tasks; }
+    public void setTasks(List<Task> tasks) { this.tasks = tasks; }
+}
