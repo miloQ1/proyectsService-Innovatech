@@ -1,11 +1,14 @@
 package cl.innovatech.servicio_proyectos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import cl.innovatech.servicio_proyectos.model.enums.PhaseStatus;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "phases")
 public class Phase {
@@ -15,6 +18,7 @@ public class Phase {
     @Column(name = "phase_id")
     private Long phaseId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
@@ -35,6 +39,7 @@ public class Phase {
     @Column(nullable = false, length = 20)
     private PhaseStatus status;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "phase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 

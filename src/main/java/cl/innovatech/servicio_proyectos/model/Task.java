@@ -1,5 +1,7 @@
 package cl.innovatech.servicio_proyectos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import cl.innovatech.servicio_proyectos.model.enums.TaskPriority;
 import cl.innovatech.servicio_proyectos.model.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -8,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "tasks")
 public class Task {
@@ -17,18 +20,22 @@ public class Task {
     @Column(name = "task_id")
     private Long taskId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phase_id")
     private Phase phase;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_task_id")
     private Task parentTask;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> subTasks = new ArrayList<>();
 

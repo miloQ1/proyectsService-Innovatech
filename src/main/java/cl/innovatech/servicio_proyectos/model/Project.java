@@ -1,5 +1,8 @@
 package cl.innovatech.servicio_proyectos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import cl.innovatech.servicio_proyectos.model.enums.ProjectStatus;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -8,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "projects")
 public class Project {
@@ -17,6 +21,7 @@ public class Project {
     @Column(name = "project_id")
     private Long projectId;
 
+    @JsonIgnoreProperties({"projects", "hibernateLazyInitializer"})
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
@@ -52,10 +57,12 @@ public class Project {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sequenceOrder ASC")
     private List<Phase> phases = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
