@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cl.innovatech.servicio_proyectos.model.Task;
+import cl.innovatech.servicio_proyectos.model.enums.TaskStatus;
 import cl.innovatech.servicio_proyectos.service.TaskService;
 
 @RestController
@@ -48,5 +49,14 @@ public class TaskController {
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Task> updateStatus(   
+        @PathVariable Long id,
+        @RequestBody java.util.Map<String, String> body) {
+    Task task = taskService.getTaskById(id);
+    task.setStatus(TaskStatus.valueOf(body.get("status")));
+    return ResponseEntity.ok(taskService.updateTask(id, task));
     }
 }

@@ -26,26 +26,29 @@ public class TaskService {
     }
 
     public Task createTask(Long projectId, Task task) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con id: " + projectId));
-        task.setProject(project);
+    Project project = projectRepository.findById(projectId)
+        .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+    task.setProject(project);
 
-        if (task.getPhase() != null && task.getPhase().getPhaseId() != null) {
-            Phase phase = phaseRepository.findById(task.getPhase().getPhaseId())
-                    .orElseThrow(() -> new RuntimeException("Fase no encontrada con id: " + task.getPhase().getPhaseId()));
-            task.setPhase(phase);
-        }
-
-        if (task.getStatus() == null) {
-            task.setStatus(TaskStatus.TODO);
-        }
-
-        return taskRepository.save(task);
+    if (task.getInputPhaseId() != null) {
+        Phase phase = phaseRepository.findById(task.getInputPhaseId())
+            .orElseThrow(() -> new RuntimeException("Fase no encontrada"));
+        task.setPhase(phase);
     }
+
+    if (task.getStatus() == null) task.setStatus(TaskStatus.TODO);
+
+    // Generar código: usa el código del proyecto + número secuencial
+    long count = taskRepository.countByProjectProjectId(projectId);
+    String code = project.getCode().split("-")[0] + "-" + String.format("%03d", count + 1);
+    task.setTaskCode(code);
+
+    return taskRepository.save(task);
+}
 
     public List<Task> getTasksByProject(Long projectId) {
-        return taskRepository.findByProjectProjectId(projectId);
-    }
+    return taskRepository.findByProjectProjectIdWithPhase(projectId);
+}
 
     public List<Task> getTasksByPhase(Long phaseId) {
         return taskRepository.findByPhasePhaseId(phaseId);

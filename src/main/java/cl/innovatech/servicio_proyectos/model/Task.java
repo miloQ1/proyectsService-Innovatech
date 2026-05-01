@@ -2,6 +2,9 @@ package cl.innovatech.servicio_proyectos.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import cl.innovatech.servicio_proyectos.model.enums.TaskPriority;
 import cl.innovatech.servicio_proyectos.model.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -46,7 +49,7 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column( length = 20)
     private TaskPriority priority;
 
     @Enumerated(EnumType.STRING)
@@ -67,6 +70,11 @@ public class Task {
 
     @Column(name = "due_date")
     private LocalDate dueDate;
+
+    @Column(name = "task_code", length = 30)
+    private String taskCode;
+
+    
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("changedAt ASC")
@@ -113,6 +121,25 @@ public class Task {
 
     public LocalDate getDueDate() { return dueDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+
+    public String getTaskCode() {
+        return taskCode;
+    }
+    public void setTaskCode(String taskCode) {
+        this.taskCode = taskCode;
+    }
+
+    @JsonProperty("phaseId")
+    public Long getPhaseIdForJson() {
+    return phase != null ? phase.getPhaseId() : null;
+    }
+
+    @Transient
+    @JsonProperty("phaseId")
+    private Long inputPhaseId;
+
+    public Long getInputPhaseId() { return inputPhaseId; }
+    public void setInputPhaseId(Long inputPhaseId) { this.inputPhaseId = inputPhaseId; }
 
     public List<TaskStatusHistory> getStatusHistory() { return statusHistory; }
     public void setStatusHistory(List<TaskStatusHistory> statusHistory) { this.statusHistory = statusHistory; }

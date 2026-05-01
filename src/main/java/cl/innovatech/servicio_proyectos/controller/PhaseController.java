@@ -34,10 +34,21 @@ public class PhaseController {
         return ResponseEntity.ok(phaseService.getPhaseById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Phase> updatePhase(@PathVariable Long id, @RequestBody Phase phase) {
-        return ResponseEntity.ok(phaseService.updatePhase(id, phase));
+    @PatchMapping("/{id}")
+public ResponseEntity<Phase> updatePhase(@PathVariable Long id, 
+                                          @RequestBody java.util.Map<String, String> body) {
+    Phase existente = phaseService.getPhaseById(id);
+    if (body.containsKey("name")) existente.setName(body.get("name"));
+    if (body.containsKey("plannedStart")) {
+        existente.setPlannedStart(body.get("plannedStart") != null && !body.get("plannedStart").isBlank() 
+            ? java.time.LocalDate.parse(body.get("plannedStart")) : null);
     }
+    if (body.containsKey("plannedEnd")) {
+        existente.setPlannedEnd(body.get("plannedEnd") != null && !body.get("plannedEnd").isBlank()
+            ? java.time.LocalDate.parse(body.get("plannedEnd")) : null);
+    }
+    return ResponseEntity.ok(phaseService.updatePhase(id, existente));
+}
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePhase(@PathVariable Long id) {
