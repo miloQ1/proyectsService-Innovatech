@@ -35,6 +35,14 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "created_by", length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;
+
+
+    
     @Column(name = "start_date")
     private LocalDate startDate;
 
@@ -105,6 +113,22 @@ public class Project {
     public void setProjectManagerId(Long projectManagerId) { this.projectManagerId = projectManagerId; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
     public List<Phase> getPhases() { return phases; }
     public void setPhases(List<Phase> phases) { this.phases = phases; }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import cl.innovatech.servicio_proyectos.model.Client;
 import cl.innovatech.servicio_proyectos.model.enums.ClientStatus;
 import cl.innovatech.servicio_proyectos.repository.ClientRepository;
+import cl.innovatech.servicio_proyectos.util.UserContext;
 
 @Service
 public class ClientService {
@@ -22,6 +23,7 @@ public class ClientService {
         if (client.getStatus() == null){
             client.setStatus(ClientStatus.ACTIVE);
         }
+        client.setCreatedBy(UserContext.getCurrentUserId());
         return clientRepository.save(client);
     }
 

@@ -29,6 +29,9 @@ public class Phase {
     @Column(name = "sequence_order", nullable = false)
     private Integer sequenceOrder;
 
+    @Column(name = "created_by", length = 50)
+    private String createdBy;
+
     @Column(name = "planned_start")
     private LocalDate plannedStart;
 
@@ -48,6 +51,10 @@ public class Phase {
 
     public Project getProject() { return project; }
     public void setProject(Project project) { this.project = project; }
+
+
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

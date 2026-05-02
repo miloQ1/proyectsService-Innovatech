@@ -12,6 +12,7 @@ import cl.innovatech.servicio_proyectos.repository.BoardColumnRepository;
 import cl.innovatech.servicio_proyectos.repository.PhaseRepository;
 import cl.innovatech.servicio_proyectos.repository.ProjectRepository;
 import cl.innovatech.servicio_proyectos.repository.TaskRepository;
+import cl.innovatech.servicio_proyectos.util.UserContext;
 
 @Service
 public class PhaseService {
@@ -39,6 +40,7 @@ public PhaseService(PhaseRepository phaseRepository,
     if (phase.getStatus() == null) {
         phase.setStatus(PhaseStatus.PENDING);
     }
+    phase.setCreatedBy(UserContext.getCurrentUserId());
     Phase saved = phaseRepository.save(phase);
     // Crear columnas por defecto
     boardColumnService.createDefaultColumns(saved.getPhaseId());

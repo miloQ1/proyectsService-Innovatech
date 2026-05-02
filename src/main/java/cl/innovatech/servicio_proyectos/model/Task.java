@@ -2,7 +2,6 @@ package cl.innovatech.servicio_proyectos.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cl.innovatech.servicio_proyectos.model.enums.TaskPriority;
@@ -48,6 +47,12 @@ public class Task {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "created_by", length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;
+
     @Enumerated(EnumType.STRING)
     @Column( length = 20)
     private TaskPriority priority;
@@ -80,6 +85,8 @@ public class Task {
     @OrderBy("changedAt ASC")
     private List<TaskStatusHistory> statusHistory = new ArrayList<>();
 
+
+    
     public Long getTaskId() { return taskId; }
     public void setTaskId(Long taskId) { this.taskId = taskId; }
 
@@ -143,4 +150,16 @@ public class Task {
 
     public List<TaskStatusHistory> getStatusHistory() { return statusHistory; }
     public void setStatusHistory(List<TaskStatusHistory> statusHistory) { this.statusHistory = statusHistory; }
+    public String getCreatedBy() {
+        return createdBy;
+    }
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 }

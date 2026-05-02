@@ -9,6 +9,7 @@ import cl.innovatech.servicio_proyectos.model.Project;
 import cl.innovatech.servicio_proyectos.model.enums.ProjectStatus;
 import cl.innovatech.servicio_proyectos.repository.ClientRepository;
 import cl.innovatech.servicio_proyectos.repository.ProjectRepository;
+import cl.innovatech.servicio_proyectos.util.UserContext;
 
 @Service
 public class ProjectService {
@@ -25,6 +26,8 @@ public class ProjectService {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + clientId));
         project.setClient(client);
+        project.setCreatedBy(UserContext.getCurrentUserId());
+
         if (project.getStatus() == null) {
             project.setStatus(ProjectStatus.PLANNING);
         }
@@ -55,6 +58,7 @@ public class ProjectService {
         existente.setStatus(project.getStatus());
         existente.setProgressPct(project.getProgressPct());
         existente.setProjectManagerId(project.getProjectManagerId());
+        existente.setUpdatedBy(UserContext.getCurrentUserId());
         return projectRepository.save(existente);
     }
 

@@ -11,6 +11,7 @@ import cl.innovatech.servicio_proyectos.model.enums.TaskStatus;
 import cl.innovatech.servicio_proyectos.repository.PhaseRepository;
 import cl.innovatech.servicio_proyectos.repository.ProjectRepository;
 import cl.innovatech.servicio_proyectos.repository.TaskRepository;
+import cl.innovatech.servicio_proyectos.util.UserContext;
 
 @Service
 public class TaskService {
@@ -28,6 +29,7 @@ public class TaskService {
     public Task createTask(Long projectId, Task task) {
     Project project = projectRepository.findById(projectId)
         .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+        task.setCreatedBy(UserContext.getCurrentUserId());
     task.setProject(project);
 
     if (task.getInputPhaseId() != null) {
@@ -70,6 +72,7 @@ public class TaskService {
         existente.setActualHours(task.getActualHours());
         existente.setStartDate(task.getStartDate());
         existente.setDueDate(task.getDueDate());
+        existente.setUpdatedBy(UserContext.getCurrentUserId());
         return taskRepository.save(existente);
     }
 

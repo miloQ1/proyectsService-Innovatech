@@ -30,6 +30,9 @@ public class Client {
     @Column(name = "contact_email", length = 150)
     private String contactEmail;
 
+    @Column(name = "created_by", length = 50)
+    private String createdBy;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ClientStatus status;
@@ -68,4 +71,18 @@ public class Client {
 
     public List<Project> getProjects() { return projects; }
     public void setProjects(List<Project> projects) { this.projects = projects; }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    
 }
