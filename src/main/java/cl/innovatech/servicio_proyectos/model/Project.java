@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import cl.innovatech.servicio_proyectos.model.ProjectMember;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
@@ -65,6 +66,18 @@ public class Project {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectMember> members = new ArrayList<>();
+
+
+    public List<ProjectMember> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<ProjectMember> members) {
+        this.members = members;
+    }
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sequenceOrder ASC")

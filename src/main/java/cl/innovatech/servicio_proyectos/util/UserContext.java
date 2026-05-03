@@ -2,21 +2,19 @@ package cl.innovatech.servicio_proyectos.util;
 
 
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 public class UserContext {
 
     public static String getCurrentUserId() {
-        try {
-            ServletRequestAttributes attrs =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            if (attrs == null) return null;
-            HttpServletRequest request = attrs.getRequest();
-            return request.getHeader("X-User-Id");
-        } catch (Exception e) {
-            return null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            return (String) auth.getPrincipal();
         }
+        return null;
     }
 }

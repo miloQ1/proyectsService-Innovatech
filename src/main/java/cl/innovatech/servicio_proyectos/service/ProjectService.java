@@ -2,40 +2,58 @@ package cl.innovatech.servicio_proyectos.service;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import cl.innovatech.servicio_proyectos.model.Client;
 import cl.innovatech.servicio_proyectos.model.Project;
+import cl.innovatech.servicio_proyectos.model.ProjectMember;
 import cl.innovatech.servicio_proyectos.model.enums.ProjectStatus;
 import cl.innovatech.servicio_proyectos.repository.ClientRepository;
+import cl.innovatech.servicio_proyectos.repository.ProjectMemberRepository;
 import cl.innovatech.servicio_proyectos.repository.ProjectRepository;
 import cl.innovatech.servicio_proyectos.util.UserContext;
 
 @Service
 public class ProjectService {
 
+    private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
     private final ClientRepository clientRepository;
 
-    public ProjectService(ProjectRepository projectRepository, ClientRepository clientRepository) {
-        this.projectRepository = projectRepository;
-        this.clientRepository = clientRepository;
-    }
+    public ProjectService(ProjectRepository projectRepository,
+                      ClientRepository clientRepository,
+                      ProjectMemberRepository projectMemberRepository) {
+    this.projectRepository = projectRepository;
+    this.clientRepository = clientRepository;
+    this.projectMemberRepository = projectMemberRepository;
+}
 
     public Project createProject(Long clientId, Project project) {
         Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + clientId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado"));
         project.setClient(client);
         project.setCreatedBy(UserContext.getCurrentUserId());
+        Project saved = projectRepository.save(project);
 
-        if (project.getStatus() == null) {
-            project.setStatus(ProjectStatus.PLANNING);
+        // ← Auto-agregar creador como miembro
+        String userId = UserContext.getCurrentUserId();
+        if (userId != null) {
+            ProjectMember member = new ProjectMember();
+            member.setProject(saved);
+            member.setUserId(userId);
+            member.setUserName("owner"); // se actualiza cuando el front mande el userName
+            projectMemberRepository.save(member);
         }
-        return projectRepository.save(project);
+
+        return saved;
     }
 
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    String userId = UserContext.getCurrentUserId();
+    if (userId == null) return List.of();
+    return projectRepository.findByMemberUserId(userId);
     }
 
     public List<Project> getProjectsByClient(Long clientId) {
