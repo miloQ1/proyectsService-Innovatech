@@ -86,4 +86,8 @@ public class ProjectService {
         existente.setStatus(ProjectStatus.CANCELLED);
         projectRepository.save(existente);
     }
+
+    public Project saveProject(Project project) {
+    return projectRepository.save(project);
+}
 }

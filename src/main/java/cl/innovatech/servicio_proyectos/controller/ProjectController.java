@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cl.innovatech.servicio_proyectos.model.Project;
+import cl.innovatech.servicio_proyectos.model.enums.ProjectStatus;
 import cl.innovatech.servicio_proyectos.service.ProjectService;
+import cl.innovatech.servicio_proyectos.util.UserContext;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -53,4 +55,14 @@ public ResponseEntity<Project> createProject(
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
+
+    @@PatchMapping("/{id}/status")
+public ResponseEntity<Project> updateStatus(
+        @PathVariable Long id,
+        @RequestBody java.util.Map<String, String> body) {
+    Project existente = projectService.getProjectById(id);
+    existente.setStatus(ProjectStatus.valueOf(body.get("status")));
+    existente.setUpdatedBy(UserContext.getCurrentUserId());
+    return ResponseEntity.ok(projectService.saveProject(existente));
+}
 }
