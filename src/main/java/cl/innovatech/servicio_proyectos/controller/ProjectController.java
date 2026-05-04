@@ -20,9 +20,13 @@ public class ProjectController {
     }
 
     @PostMapping("/client/{clientId}")
-    public ResponseEntity<Project> createProject(@PathVariable Long clientId, @RequestBody Project project) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(clientId, project));
-    }
+public ResponseEntity<Project> createProject(
+        @PathVariable Long clientId,
+        @RequestBody Project project,
+        @RequestHeader(value = "X-User-Name", required = false) String userName) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(projectService.createProject(clientId, project, userName));
+}
 
     @GetMapping
     public ResponseEntity<List<Project>> getAllProjects() {

@@ -38,6 +38,7 @@ public class ProjectMemberService {
         ProjectMember member = new ProjectMember();
         member.setProject(project);
         member.setUserId(userId);
+        member.setRole("MEMBER");
         member.setUserName(userName);
 
         return memberRepository.save(member);

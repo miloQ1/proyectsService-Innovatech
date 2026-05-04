@@ -30,7 +30,7 @@ public class ProjectService {
     this.projectMemberRepository = projectMemberRepository;
 }
 
-    public Project createProject(Long clientId, Project project) {
+    public Project createProject(Long clientId, Project project, String userName) {
         Client client = clientRepository.findById(clientId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado"));
         project.setClient(client);
@@ -43,7 +43,8 @@ public class ProjectService {
             ProjectMember member = new ProjectMember();
             member.setProject(saved);
             member.setUserId(userId);
-            member.setUserName("owner"); // se actualiza cuando el front mande el userName
+            member.setUserName(userName != null ? userName : "unknown");
+            member.setRole("OWNER"); // ← agregar aquí // se actualiza cuando el front mande el userName
             projectMemberRepository.save(member);
         }
 
