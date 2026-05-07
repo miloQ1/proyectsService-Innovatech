@@ -58,13 +58,42 @@ public class ProjectService {
     }
 
     public List<Project> getProjectsByClient(Long clientId) {
-        return projectRepository.findByClientClientId(clientId);
-    }
+    System.out.println("=== getProjectsByClient clientId: " + clientId);
+    System.out.println("=== userId: " + UserContext.getCurrentUserId());
+    
+    String userId = UserContext.getCurrentUserId();
+    List<Project> allProjects = projectRepository.findByClientClientId(clientId);
+    System.out.println("=== proyectos encontrados: " + allProjects.size());
+    
+    if (userId == null) return List.of();
+    
+    return allProjects.stream()
+        .filter(p -> {
+            boolean isMember = projectMemberRepository
+                .existsByProject_ProjectIdAndUserId(p.getProjectId(), userId);
+            System.out.println("=== proyecto " + p.getProjectId() + " isMember: " + isMember);
+            return isMember;
+        })
+        .collect(java.util.stream.Collectors.toList());
+}
 
     public Project getProjectById(Long id) {
-        return projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con id: " + id));
+    Project project = projectRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con id: " + id));
+    
+    String userId = UserContext.getCurrentUserId();
+    boolean isMember = projectMemberRepository
+        .existsByProject_ProjectIdAndUserId(id, userId);
+    
+    if (!isMember) {
+        throw new org.springframework.web.server.ResponseStatusException(
+            org.springframework.http.HttpStatus.FORBIDDEN, 
+            "No tienes acceso a este proyecto"
+        );
     }
+    
+    return project;
+}
 
     public Project updateProject(Long id, Project project) {
         Project existente = getProjectById(id);

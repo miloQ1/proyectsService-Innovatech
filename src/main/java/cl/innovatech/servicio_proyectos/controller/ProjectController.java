@@ -56,7 +56,7 @@ public ResponseEntity<Project> createProject(
         return ResponseEntity.noContent().build();
     }
 
-    @@PatchMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
 public ResponseEntity<Project> updateStatus(
         @PathVariable Long id,
         @RequestBody java.util.Map<String, String> body) {
